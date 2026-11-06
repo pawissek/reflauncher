@@ -3,255 +3,388 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pablosiu – Strona w przebudowie</title>
-    <meta name="description" content="Strona Pablosiu jest w przebudowie. Wróć wkrótce.">
+    <title>RefLauncher – launcher na Androida</title>
+    <meta name="description" content="RefLauncher to launcher na Androida z widżetem stanu telefonu, wyszukiwarką, kategoriami i paskiem liter. Pobierz plik .apk.">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;600;800&display=swap');
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Outfit', sans-serif;
+        :root {
+            --bg: #050505;
+            --line: rgba(255, 255, 255, 0.1);
+            --muted: #9a9a9a;
+            --dim: #5c5c5c;
+            --pink: #ff2a85;
         }
 
-        body {
-            overflow-x: hidden;
-            background: #050505;
-            color: #fff;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 24px 0;
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Outfit', sans-serif; }
+        html { scroll-behavior: smooth; }
+        body { background: var(--bg); color: #fff; min-height: 100vh; overflow-x: hidden; }
+
+        .glow {
+            position: fixed; inset: 0; z-index: -1;
+            background:
+                radial-gradient(600px 600px at 78% 30%, rgba(255,255,255,0.08), transparent 70%),
+                radial-gradient(500px 500px at 10% 90%, rgba(255,255,255,0.04), transparent 70%);
         }
 
-        /* --- TŁO --- */
-        .bg-animate {
-            position: fixed;
-            inset: 0;
-            z-index: -1;
-            background: radial-gradient(circle at 50% 50%, #161616 0%, #050505 100%);
-            overflow: hidden;
+        .wrap { max-width: 1080px; margin: 0 auto; padding: 0 28px; }
+
+        nav { display: flex; justify-content: space-between; align-items: center; padding: 28px 0; }
+        .logo { font-weight: 800; font-size: 1.3rem; letter-spacing: -1px; }
+        nav a.nav-link { color: var(--muted); text-decoration: none; font-size: 0.95rem; transition: color .2s; }
+        nav a.nav-link:hover { color: #fff; }
+
+        /* --- HERO --- */
+        .hero { display: grid; grid-template-columns: 1fr 360px; gap: 56px; align-items: center; padding: 30px 0 90px; }
+
+        .chip {
+            display: inline-block; padding: 7px 16px; border: 1px solid var(--line);
+            border-radius: 999px; color: var(--muted); font-size: 0.9rem; margin-bottom: 26px;
         }
 
-        .blob {
-            position: absolute;
-            width: 500px;
-            height: 500px;
-            max-width: 90vw;
-            max-height: 90vw;
-            background: linear-gradient(135deg, #ffffff 0%, #6b6b6b 100%);
-            filter: blur(80px);
-            border-radius: 50%;
-            opacity: 0.22;
-            animation: move 20s infinite alternate ease-in-out;
-        }
+        h1 { font-size: clamp(3rem, 8vw, 5.6rem); font-weight: 200; line-height: 1; letter-spacing: -3px; margin-bottom: 26px; }
+        h1 b { font-weight: 800; }
 
-        .blob-2 {
-            background: linear-gradient(135deg, #9a9a9a 0%, #2a2a2a 100%);
-            right: -5%;
-            bottom: -5%;
-            animation: move 15s infinite alternate-reverse ease-in-out;
-        }
+        .lead { color: var(--muted); font-size: 1.2rem; line-height: 1.6; font-weight: 300; max-width: 470px; margin-bottom: 38px; }
 
-        @keyframes move {
-            from { transform: translate(-50px, -50px) scale(1) rotate(0deg); }
-            to   { transform: translate(100px, 100px) scale(1.2) rotate(45deg); }
-        }
+        .actions { display: flex; flex-wrap: wrap; align-items: center; gap: 22px; }
 
-        /* --- KONTENER --- */
-        .glass-container {
-            max-width: 700px;
-            width: 90%;
-            padding: 60px 40px;
-            background: rgba(255, 255, 255, 0.02);
-            backdrop-filter: blur(25px) saturate(180%);
-            -webkit-backdrop-filter: blur(25px) saturate(180%);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+        .btn {
+            display: inline-flex; align-items: center; gap: 12px; padding: 17px 36px;
+            background: #fff; color: #000; border-radius: 20px; font-weight: 700; font-size: 1.05rem;
+            text-decoration: none; transition: transform .3s cubic-bezier(.175,.885,.32,1.275), background .2s;
+        }
+        .btn:hover { transform: translateY(-3px) scale(1.03); background: #e5e5e5; }
+        .btn svg { width: 20px; height: 20px; }
+
+        .hint { color: var(--dim); font-size: 0.9rem; line-height: 1.5; max-width: 230px; }
+
+        /* --- TELEFON (makieta aplikacji) --- */
+        .phone-col { display: flex; justify-content: center; }
+
+        .phone {
+            width: 320px; height: 676px; flex: none;
             border-radius: 40px;
-            text-align: center;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
-            position: relative;
+            border: 1px solid rgba(255,255,255,0.18);
+            box-shadow: 0 0 0 7px #121212, 0 40px 80px -20px rgba(0,0,0,.9), 0 0 100px rgba(255,42,133,0.12);
+            background: linear-gradient(180deg, #170a33 0%, #3a0f50 45%, #6b1050 100%);
+            padding: 14px 12px 12px;
+            display: flex; flex-direction: column;
             overflow: hidden;
+            color: #fff;
         }
 
-        .glass-container::before {
-            content: "";
-            position: absolute;
-            top: 0; left: 0; right: 0; height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+        .widget {
+            border: 1.5px solid rgba(190, 40, 120, 0.45);
+            background: rgba(20, 8, 38, 0.55);
+            border-radius: 22px;
+            padding: 14px 14px 12px;
         }
+        .w-top { display: flex; align-items: center; justify-content: space-between; }
+        .greet { display: flex; align-items: center; gap: 6px; color: var(--pink); font-weight: 600; font-size: 14px; }
+        .greet svg { width: 15px; height: 15px; }
+        .w-icons { display: flex; align-items: center; gap: 9px; font-size: 12px; color: #d9cde3; }
+        .w-icons svg { width: 16px; height: 16px; }
+        .sun { width: 17px; height: 17px; border-radius: 4px; background: linear-gradient(180deg, #38bdf8, #fbbf24 55%, #fb923c); }
+        .batt { display: flex; align-items: center; gap: 4px; }
 
-        /* --- STATUS: PRZEBUDOWA --- */
-        .status {
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 18px;
-            margin-bottom: 28px;
-            border-radius: 999px;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.07);
-            color: #e5e5e5;
-            font-size: 0.95rem;
-            font-weight: 600;
+        .time { font-size: 46px; font-weight: 800; letter-spacing: -2.5px; line-height: 1; margin-top: 8px; }
+        .date { color: #d4c8de; font-size: 13px; margin-top: 4px; font-weight: 300; }
+
+        .stats {
+            display: flex; justify-content: space-between; align-items: center;
+            border: 1.5px solid rgba(190, 40, 120, 0.45); border-radius: 14px;
+            background: rgba(255,255,255,0.04);
+            margin-top: 10px; padding: 8px 10px;
+            font-size: 10.5px; font-weight: 600; white-space: nowrap;
         }
+        .stats .cpu { color: var(--pink); }
+        .stats i { width: 3px; height: 3px; border-radius: 50%; background: #8c7a9b; }
 
-        .status-dot {
-            width: 9px;
-            height: 9px;
-            border-radius: 50%;
-            background: #fff;
-            animation: pulse 1.8s infinite ease-in-out;
+        .search {
+            position: relative; margin-top: 10px; height: 40px;
+            border-radius: 20px; border: 1.5px solid rgba(120, 90, 150, 0.6);
+            background: rgba(58, 24, 78, 0.75);
+            display: flex; align-items: center; padding: 0 14px; gap: 12px;
         }
-
-        @keyframes pulse {
-            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.55); }
-            50%      { box-shadow: 0 0 0 8px rgba(255, 255, 255, 0); }
+        .search svg { width: 17px; height: 17px; color: var(--pink); flex: none; }
+        .search input {
+            flex: 1; min-width: 0; background: none; border: none; outline: none;
+            color: #fff; font-size: 14px; font-weight: 400;
         }
+        .search input::placeholder { color: #9d8aae; }
+        .search:focus-within { border-color: var(--pink); }
 
-        h1 {
-            font-size: clamp(2.8rem, 12vw, 4.5rem);
-            font-weight: 800;
-            background: linear-gradient(to bottom, #ffffff 40%, #8a8a8a 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 15px;
-            letter-spacing: -3px;
-            line-height: 1.05;
+        .chips { display: flex; gap: 6px; margin-top: 12px; overflow-x: auto; scrollbar-width: none; }
+        .chips::-webkit-scrollbar { display: none; }
+        .chips button {
+            flex: none; height: 26px; padding: 0 13px; border-radius: 9px;
+            border: 1.5px solid rgba(130, 100, 160, 0.7); background: transparent;
+            color: #fff; font-size: 11.5px; font-weight: 600; cursor: pointer;
+            transition: background .2s, color .2s;
         }
+        .chips button.on { background: var(--pink); border-color: var(--pink); color: #1a0a2e; }
 
-        .headline {
-            font-size: 1.6rem;
-            font-weight: 600;
-            margin-bottom: 14px;
+        .body { flex: 1; min-height: 0; display: flex; gap: 8px; margin-top: 12px; }
+
+        .apps { list-style: none; flex: 1; overflow-y: auto; scrollbar-width: none; display: flex; flex-direction: column; gap: 6px; }
+        .apps::-webkit-scrollbar { display: none; }
+        .apps li {
+            flex: none; display: flex; align-items: center; gap: 14px;
+            height: 48px; padding: 0 9px; border-radius: 14px;
+            background: linear-gradient(180deg, rgba(88, 42, 110, 0.85), rgba(92, 34, 100, 0.85));
+            border: 1.5px solid rgba(130, 90, 160, 0.55);
+            transition: border-color .2s, transform .2s;
         }
+        .apps li.hl { border-color: var(--pink); transform: translateX(3px); }
+        .apps .nm { font-size: 16px; font-weight: 600; letter-spacing: 0.2px; }
+        .apps .empty { border: none; background: none; color: #a592b5; font-size: 14px; justify-content: center; }
 
-        p {
-            color: #9a9a9a;
-            font-size: 1.15rem;
-            line-height: 1.6;
-            max-width: 480px;
-            margin: 0 auto 36px;
-            font-weight: 300;
+        .ic {
+            width: 31px; height: 31px; border-radius: 10px; background: #fff; flex: none;
+            display: grid; place-items: center; font-weight: 800; font-size: 15px;
         }
+        .ic svg { width: 25px; height: 25px; }
 
-        /* --- PASEK POSTĘPU --- */
-        .progress {
-            max-width: 360px;
-            margin: 0 auto 40px;
+        .rail {
+            width: 23px; border-radius: 12px; background: rgba(255,255,255,0.04);
+            display: flex; flex-direction: column; justify-content: space-between; align-items: center;
+            padding: 6px 0; touch-action: none; user-select: none; cursor: pointer;
         }
+        .rail span { font-size: 8.5px; font-weight: 400; color: #8c7a9b; line-height: 1; transition: transform .15s, color .15s; }
+        .rail span.has { color: var(--pink); font-weight: 800; }
+        .rail span.on { color: #fff; transform: scale(1.5); }
 
-        .progress-track {
-            height: 8px;
-            border-radius: 999px;
-            background: rgba(255, 255, 255, 0.08);
-            overflow: hidden;
+        /* --- FUNKCJE --- */
+        .features { border-top: 1px solid var(--line); }
+        .feature { display: grid; grid-template-columns: 1fr 1.2fr; gap: 32px; padding: 38px 0; border-bottom: 1px solid var(--line); }
+        .feature h2 { font-size: 1.6rem; font-weight: 600; letter-spacing: -0.5px; }
+        .feature p { color: var(--muted); font-size: 1.1rem; line-height: 1.6; font-weight: 300; max-width: 52ch; }
+
+        /* --- POBIERANIE --- */
+        .download { text-align: center; padding: 100px 0 80px; }
+        .download h2 { font-size: clamp(2rem, 5vw, 3.2rem); font-weight: 200; letter-spacing: -2px; margin-bottom: 14px; }
+        .download h2 b { font-weight: 800; }
+        .download p { color: var(--muted); font-size: 1.1rem; line-height: 1.6; font-weight: 300; max-width: 440px; margin: 0 auto 34px; }
+
+        footer {
+            display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px;
+            padding: 26px 0 40px; border-top: 1px solid var(--line); color: var(--dim); font-size: 0.9rem;
         }
+        footer a { color: var(--muted); text-decoration: none; transition: color .2s; }
+        footer a:hover { color: #fff; }
 
-        .progress-fill {
-            height: 100%;
-            width: 65%;
-            border-radius: 999px;
-            background: linear-gradient(90deg, #5a5a5a, #ffffff, #5a5a5a);
-            background-size: 200% 100%;
-            animation: shimmer 4s linear infinite;
-        }
+        a:focus-visible, button:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
 
-        @keyframes shimmer {
-            from { background-position: 0% 0; }
-            to   { background-position: 200% 0; }
-        }
-
-        .progress-label {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px;
-            font-size: 0.85rem;
-            color: rgba(255, 255, 255, 0.45);
-        }
-
-        /* --- PRZYCISK --- */
-        .cta-button {
-            display: inline-block;
-            padding: 18px 45px;
-            background: #fff;
-            color: #000;
-            text-decoration: none;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 1.1rem;
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
-        }
-
-        .cta-button:hover {
-            transform: scale(1.05) translateY(-3px);
-            box-shadow: 0 15px 40px rgba(255, 255, 255, 0.2);
-            background: #e5e5e5;
-        }
-
-        .secondary-link {
-            display: block;
-            margin-top: 25px;
-            color: rgba(255, 255, 255, 0.5);
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: 0.3s;
-        }
-
-        .secondary-link:hover { color: #fff; }
-
-        a:focus-visible {
-            outline: 3px solid #fff;
-            outline-offset: 4px;
-        }
-
-        @media (max-width: 480px) {
-            .glass-container { padding: 44px 24px; border-radius: 32px; }
+        @media (max-width: 900px) {
+            .hero { grid-template-columns: 1fr; padding-bottom: 60px; }
+            .phone-col { order: 2; }
             h1 { letter-spacing: -2px; }
-            .headline { font-size: 1.35rem; }
-            p { font-size: 1.05rem; }
+            .feature { grid-template-columns: 1fr; gap: 10px; padding: 30px 0; }
         }
-
+        @media (max-width: 400px) { .phone { zoom: 0.9; } }
         @media (prefers-reduced-motion: reduce) {
-            .blob, .blob-2, .status-dot, .progress-fill { animation: none; }
-            .cta-button { transition: none; }
+            html { scroll-behavior: auto; }
+            .btn, .chips button, .apps li, .rail span { transition: none; }
         }
     </style>
 </head>
 <body>
+    <div class="glow" aria-hidden="true"></div>
 
-    <div class="bg-animate" aria-hidden="true">
-        <div class="blob"></div>
-        <div class="blob blob-2"></div>
+    <div class="wrap">
+        <nav>
+            <div class="logo">RefLauncher</div>
+            <a class="nav-link" href="#pobierz">Pobierz</a>
+        </nav>
+
+        <header class="hero">
+            <div>
+                <div class="chip">Launcher na Androida</div>
+                <h1>Twoje aplikacje.<br><b>Pod kciukiem.</b></h1>
+                <p class="lead">RefLauncher to launcher z widżetem stanu telefonu, wyszukiwarką, kategoriami i paskiem liter A–Z.</p>
+                <div class="actions">
+                    <a class="btn" href="https://github.com/pawissek/reflauncher/releases/download/Test-Build/reflauncher-testbuild1.apk" download>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg>
+                        Wypróbuj Test Build
+                    </a>
+                    <p class="hint">Wymagany Android 14+. Po pobraniu zezwól na instalację z nieznanych źródeł.</p>
+                </div>
+            </div>
+
+            <div class="phone-col">
+                <div class="phone" aria-label="Podgląd launchera RefLauncher">
+                    <div class="widget">
+                        <div class="w-top">
+                            <div class="greet"><span id="greet">Dobranoc</span><span id="greetEmoji">🌙</span>
+                                <svg viewBox="0 0 24 24" fill="#34d399" aria-hidden="true"><path d="M12 3l9 8h-3v9h-5v-6h-2v6H6v-9H3z"/></svg>
+                            </div>
+                            <div class="w-icons" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" fill="#e5e5e5"><rect x="3" y="3" width="18" height="18" rx="3"/><path d="M7 8h4M9 6v4M13 9h4M8 15h3M13 15h4M13 17h4" stroke="#2a1040" stroke-width="1.6" stroke-linecap="round"/></svg>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="#e5e5e5" stroke-width="2" stroke-linecap="round"><path d="M3 6h13M3 11h13M3 16h7"/><path d="M14 19l6-6" stroke-width="2.4"/></svg>
+                                <span class="sun"></span>
+                                <span class="batt"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="3" width="8" height="18" rx="2" fill="#84cc16"/><rect x="10" y="1.5" width="4" height="2" fill="#84cc16"/></svg>66%</span>
+                            </div>
+                        </div>
+                        <div class="time" id="time">23:15</div>
+                        <div class="date" id="date">Piątek, 6 listopada</div>
+                        <div class="stats">
+                            <span class="cpu">CPU 32%</span><i></i><span>RAM 7.0 / 11.2 GB</span><i></i><span>33.0°C</span>
+                        </div>
+                    </div>
+
+                    <label class="search">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><circle cx="10" cy="10" r="6.5"/><path d="M15 15l5.5 5.5"/></svg>
+                        <input id="q" type="text" placeholder="Szukaj aplikacji…" autocomplete="off" aria-label="Szukaj aplikacji">
+                    </label>
+
+                    <div class="chips" id="chips"></div>
+
+                    <div class="body">
+                        <ul class="apps" id="apps"></ul>
+                        <div class="rail" id="rail" aria-label="Pasek liter"></div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <section class="features">
+            <div class="feature">
+                <h2>Widżet stanu</h2>
+                <p>Powitanie, godzina i data, poziom baterii oraz zużycie procesora i pamięci RAM i temperatura. Wszystko na jednym ekranie.</p>
+            </div>
+            <div class="feature">
+                <h2>Kategorie i wyszukiwarka</h2>
+                <p>Ulubione, Narzędzia, Media, Gry i Inne. Albo wpisz nazwę aplikacji i znajdź ją od razu. Możesz to wypróbować na telefonie obok.</p>
+            </div>
+            <div class="feature">
+                <h2>Pasek liter</h2>
+                <p>Przesuń palcem po alfabecie, żeby skoczyć do aplikacji. Litery, na które masz aplikacje, są wyróżnione.</p>
+            </div>
+        </section>
+
+        <section class="download" id="pobierz">
+            <h2>Zainstaluj <b>RefLauncher</b></h2>
+            <p>Wymagany Android 14 lub nowszy. Pobierz plik, otwórz go na telefonie i potwierdź instalację.</p>
+            <a class="btn" href="https://github.com/pawissek/reflauncher/releases/download/Test-Build/reflauncher-testbuild1.apk" download>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-5-5m5 5l5-5M5 21h14"/></svg>
+                Wypróbuj Test Build
+            </a>
+        </section>
+
+        <footer>
+            <span>© RefLauncher</span>
+        </footer>
     </div>
 
-    <main class="glass-container">
-        <div class="status" role="status">
-            <span class="status-dot" aria-hidden="true"></span>
-            Strona w przebudowie
-        </div>
+    <script>
+        var DATA = {
+            'Ulubione':  ['Aparat', 'Muzyka', 'Telefon', 'Wiadomości'],
+            'Narzędzia': ['Kalkulator', 'Pliki', 'Ustawienia', 'Zegar'],
+            'Media':     ['Aparat', 'Dyktafon', 'Galeria', 'Muzyka'],
+            'Gry':       ['Pasjans', 'Sudoku', 'Szachy'],
+            'Inne':      ['Kalendarz', 'Mapy', 'Notatki', 'Pogoda']
+        };
+        var ALL = [];
+        Object.keys(DATA).forEach(function (k) {
+            DATA[k].forEach(function (n) { if (ALL.indexOf(n) === -1) ALL.push(n); });
+        });
+        ALL.sort(function (a, b) { return a.localeCompare(b, 'pl'); });
 
-        <h1>referencja</h1>
+        var ICONS = {
+            'Kalkulator': '<svg viewBox="0 0 24 24"><circle cx="7" cy="7" r="4.6" fill="#0b5d4a"/><circle cx="17" cy="7" r="4.6" fill="#0b5d4a"/><circle cx="7" cy="17" r="4.6" fill="#0b5d4a"/><circle cx="17" cy="17" r="4.6" fill="#34d399"/><path d="M5 7h4M15 7h4M7 15v4M5 17h4M15 16h4M15 18h4" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>',
+            'Pliki': '<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2" fill="#3b82f6"/><path d="M3 5h8l-8 8z" fill="#f59e0b"/><path d="M3 5h5L3 10z" fill="#ef4444"/></svg>',
+            'Ustawienia': '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5" fill="#3b82f6" stroke="#60a5fa" stroke-width="2.5" stroke-dasharray="3.2 2.1"/><circle cx="12" cy="12" r="4.2" fill="#fff"/><circle cx="12" cy="12" r="2.2" fill="#3b82f6"/></svg>',
+            'Zegar': '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#3b5bdb"/><path d="M12 6v6l4.5 2.5" stroke="#fff" stroke-width="2.2" stroke-linecap="round" fill="none"/><circle cx="12" cy="12" r="1.6" fill="#1e2a78"/></svg>'
+        };
+        var TINTS = ['#ff2a85', '#3b82f6', '#16a34a', '#f59e0b', '#8b5cf6'];
+        function icon(name) {
+            if (ICONS[name]) return '<span class="ic">' + ICONS[name] + '</span>';
+            var c = TINTS[(name.charCodeAt(0) + name.length) % TINTS.length];
+            return '<span class="ic" style="color:' + c + '">' + name[0] + '</span>';
+        }
 
-        <h2 class="headline">Wracam z nową stroną</h2>
-        <p>Pracuję nad nowym wyglądem i zawartością. Zajrzyj tu niedługo, a w międzyczasie znajdziesz mnie pod linkiem poniżej.</p>
+        var chipsEl = document.getElementById('chips');
+        var listEl = document.getElementById('apps');
+        var railEl = document.getElementById('rail');
+        var qEl = document.getElementById('q');
+        var cat = 'Narzędzia';
+        var ALPHA = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
 
-        <div class="progress" aria-label="Postęp przebudowy: 65%">
-            <div class="progress-track">
-                <div class="progress-fill"></div>
-            </div>
-            <div class="progress-label">
-                <span>Postęp prac</span>
-                <span>50%</span>
-            </div>
-        </div>
+        railEl.innerHTML = ALPHA.map(function (l) { return '<span data-l="' + l + '">' + l + '</span>'; }).join('');
 
-        <a href="https://referencja.monsterkoholik.pl/" class="cta-button">Przejdź do Bio Link</a>
-    </main>
+        function current() {
+            var q = qEl.value.trim().toLowerCase();
+            if (q) return ALL.filter(function (n) { return n.toLowerCase().indexOf(q) !== -1; });
+            return DATA[cat];
+        }
 
+        function render() {
+            var searching = qEl.value.trim() !== '';
+            chipsEl.innerHTML = Object.keys(DATA).map(function (k) {
+                return '<button type="button" data-c="' + k + '"' + (!searching && k === cat ? ' class="on"' : '') + '>' + k + '</button>';
+            }).join('');
+
+            var items = current();
+            listEl.innerHTML = items.length
+                ? items.map(function (n) { return '<li data-l="' + n[0].toUpperCase() + '">' + icon(n) + '<span class="nm">' + n + '</span></li>'; }).join('')
+                : '<li class="empty">Brak wyników</li>';
+
+            var present = items.map(function (n) { return n[0].toUpperCase(); });
+            railEl.querySelectorAll('span').forEach(function (s) {
+                s.classList.toggle('has', present.indexOf(s.dataset.l) !== -1);
+                s.classList.remove('on');
+            });
+        }
+
+        var active = null;
+        function jump(letter) {
+            if (letter === active) return;
+            active = letter;
+            var first = null;
+            listEl.querySelectorAll('li').forEach(function (li) {
+                var hit = li.dataset.l === letter;
+                li.classList.toggle('hl', hit);
+                if (hit && !first) first = li;
+            });
+            railEl.querySelectorAll('span').forEach(function (s) { s.classList.toggle('on', s.dataset.l === letter); });
+            if (first) first.scrollIntoView({ block: 'nearest', behavior: 'auto' });
+        }
+
+        chipsEl.addEventListener('click', function (e) {
+            var b = e.target.closest('button');
+            if (!b) return;
+            cat = b.dataset.c;
+            qEl.value = '';
+            active = null;
+            render();
+        });
+        qEl.addEventListener('input', function () { active = null; render(); });
+
+        function fromPointer(e) {
+            var r = railEl.getBoundingClientRect();
+            var i = Math.floor((e.clientY - r.top) / r.height * ALPHA.length);
+            jump(ALPHA[Math.max(0, Math.min(ALPHA.length - 1, i))]);
+        }
+        var dragging = false;
+        railEl.addEventListener('pointerdown', function (e) { dragging = true; railEl.setPointerCapture(e.pointerId); fromPointer(e); });
+        railEl.addEventListener('pointermove', function (e) { if (dragging) fromPointer(e); });
+        railEl.addEventListener('pointerup', function () { dragging = false; });
+        railEl.addEventListener('pointercancel', function () { dragging = false; });
+
+        render();
+
+        function tick() {
+            var d = new Date(), h = d.getHours();
+            document.getElementById('time').textContent = h + ':' + String(d.getMinutes()).padStart(2, '0');
+            var ds = d.toLocaleDateString('pl-PL', { weekday: 'long', day: 'numeric', month: 'long' });
+            document.getElementById('date').textContent = ds.charAt(0).toUpperCase() + ds.slice(1);
+            var g = h >= 22 || h < 5 ? ['Dobranoc', '🌙'] : h < 18 ? ['Dzień dobry', '☀️'] : ['Dobry wieczór', '🌇'];
+            document.getElementById('greet').textContent = g[0];
+            document.getElementById('greetEmoji').textContent = g[1];
+        }
+        tick();
+        setInterval(tick, 30000);
+    </script>
 </body>
 </html>
