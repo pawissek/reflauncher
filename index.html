@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pablosiu - Home</title>
+    <title>Pablosiu – Strona w przebudowie</title>
+    <meta name="description" content="Strona Pablosiu jest w przebudowie. Wróć wkrótce.">
     <style>
-        /* Nowoczesny font Outfit z większym zakresem wag */
         @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
 
         * {
@@ -17,39 +17,39 @@
 
         body {
             overflow-x: hidden;
-            background: #060608; /* Nieco głębsza czerń */
-            color: white;
+            background: #050505;
+            color: #fff;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 24px 0;
         }
 
-        /* --- ANIMOWANE TŁO (Ulepszone) --- */
+        /* --- TŁO --- */
         .bg-animate {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            inset: 0;
             z-index: -1;
-            background: radial-gradient(circle at 50% 50%, #0f172a 0%, #060608 100%);
+            background: radial-gradient(circle at 50% 50%, #161616 0%, #050505 100%);
+            overflow: hidden;
         }
 
         .blob {
             position: absolute;
             width: 500px;
             height: 500px;
-            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+            max-width: 90vw;
+            max-height: 90vw;
+            background: linear-gradient(135deg, #ffffff 0%, #6b6b6b 100%);
             filter: blur(80px);
             border-radius: 50%;
-            z-index: -1;
-            opacity: 0.3; /* Subtelniejsza przezroczystość */
+            opacity: 0.22;
             animation: move 20s infinite alternate ease-in-out;
         }
 
         .blob-2 {
-            background: linear-gradient(135deg, #3b82f6 0%, #2dd4bf 100%);
+            background: linear-gradient(135deg, #9a9a9a 0%, #2a2a2a 100%);
             right: -5%;
             bottom: -5%;
             animation: move 15s infinite alternate-reverse ease-in-out;
@@ -57,10 +57,10 @@
 
         @keyframes move {
             from { transform: translate(-50px, -50px) scale(1) rotate(0deg); }
-            to { transform: translate(100px, 100px) scale(1.2) rotate(45deg); }
+            to   { transform: translate(100px, 100px) scale(1.2) rotate(45deg); }
         }
 
-        /* --- GŁÓWNY KONTENER (Glassmorphism 2.0) --- */
+        /* --- KONTENER --- */
         .glass-container {
             max-width: 700px;
             width: 90%;
@@ -76,7 +76,6 @@
             overflow: hidden;
         }
 
-        /* Efekt błysku na kontenerze */
         .glass-container::before {
             content: "";
             position: absolute;
@@ -84,26 +83,97 @@
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
         }
 
+        /* --- STATUS: PRZEBUDOWA --- */
+        .status {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 18px;
+            margin-bottom: 28px;
+            border-radius: 999px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            background: rgba(255, 255, 255, 0.07);
+            color: #e5e5e5;
+            font-size: 0.95rem;
+            font-weight: 600;
+        }
+
+        .status-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #fff;
+            animation: pulse 1.8s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.55); }
+            50%      { box-shadow: 0 0 0 8px rgba(255, 255, 255, 0); }
+        }
+
         h1 {
-            font-size: 4.5rem;
+            font-size: clamp(2.8rem, 12vw, 4.5rem);
             font-weight: 800;
-            background: linear-gradient(to bottom, #ffffff 40%, #94a3b8 100%);
+            background: linear-gradient(to bottom, #ffffff 40%, #8a8a8a 100%);
             -webkit-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 15px;
             letter-spacing: -3px;
+            line-height: 1.05;
+        }
+
+        .headline {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin-bottom: 14px;
         }
 
         p {
-            color: #94a3b8;
-            font-size: 1.2rem;
+            color: #9a9a9a;
+            font-size: 1.15rem;
             line-height: 1.6;
-            max-width: 500px;
-            margin: 0 auto 40px;
+            max-width: 480px;
+            margin: 0 auto 36px;
             font-weight: 300;
         }
 
-        /* --- PRZYCISK (Większa głębia) --- */
+        /* --- PASEK POSTĘPU --- */
+        .progress {
+            max-width: 360px;
+            margin: 0 auto 40px;
+        }
+
+        .progress-track {
+            height: 8px;
+            border-radius: 999px;
+            background: rgba(255, 255, 255, 0.08);
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            width: 65%;
+            border-radius: 999px;
+            background: linear-gradient(90deg, #5a5a5a, #ffffff, #5a5a5a);
+            background-size: 200% 100%;
+            animation: shimmer 4s linear infinite;
+        }
+
+        @keyframes shimmer {
+            from { background-position: 0% 0; }
+            to   { background-position: 200% 0; }
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.45);
+        }
+
+        /* --- PRZYCISK --- */
         .cta-button {
             display: inline-block;
             padding: 18px 45px;
@@ -120,40 +190,68 @@
         .cta-button:hover {
             transform: scale(1.05) translateY(-3px);
             box-shadow: 0 15px 40px rgba(255, 255, 255, 0.2);
-            background: #f8fafc;
+            background: #e5e5e5;
         }
 
-        /* Dodatkowy link pod przyciskiem dla balansu */
         .secondary-link {
             display: block;
             margin-top: 25px;
-            color: rgba(255, 255, 255, 0.4);
+            color: rgba(255, 255, 255, 0.5);
             text-decoration: none;
             font-size: 0.9rem;
             transition: 0.3s;
         }
 
-        .secondary-link:hover {
-            color: #fff;
+        .secondary-link:hover { color: #fff; }
+
+        a:focus-visible {
+            outline: 3px solid #fff;
+            outline-offset: 4px;
         }
 
+        @media (max-width: 480px) {
+            .glass-container { padding: 44px 24px; border-radius: 32px; }
+            h1 { letter-spacing: -2px; }
+            .headline { font-size: 1.35rem; }
+            p { font-size: 1.05rem; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .blob, .blob-2, .status-dot, .progress-fill { animation: none; }
+            .cta-button { transition: none; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="bg-animate">
+    <div class="bg-animate" aria-hidden="true">
         <div class="blob"></div>
-        <div class="blob-2"></div>
+        <div class="blob blob-2"></div>
     </div>
 
-    <div class="glass-container">
-        <h1>Pablosiu</h1>
-        <p>To nie jest zwykła strona. To gówno, gdzie znajdziesz moje dzieła.</p>
-        
-        <a href="projekty.html" class="cta-button">Zobacz moje projekty</a>
-        
-        <a href="https://itspablosiu.github.io/bio/" class="secondary-link">Przejdź do Bio Link →</a>
-    </div>
+    <main class="glass-container">
+        <div class="status" role="status">
+            <span class="status-dot" aria-hidden="true"></span>
+            Strona w przebudowie
+        </div>
+
+        <h1>referencja</h1>
+
+        <h2 class="headline">Wracam z nową stroną</h2>
+        <p>Pracuję nad nowym wyglądem i zawartością. Zajrzyj tu niedługo, a w międzyczasie znajdziesz mnie pod linkiem poniżej.</p>
+
+        <div class="progress" aria-label="Postęp przebudowy: 65%">
+            <div class="progress-track">
+                <div class="progress-fill"></div>
+            </div>
+            <div class="progress-label">
+                <span>Postęp prac</span>
+                <span>50%</span>
+            </div>
+        </div>
+
+        <a href="https://referencja.monsterkoholik.pl/" class="cta-button">Przejdź do Bio Link</a>
+    </main>
 
 </body>
 </html>
